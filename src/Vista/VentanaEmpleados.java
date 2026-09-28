@@ -3,6 +3,7 @@ package Vista;
 import Controlador.EmpleadoControlador;
 import Modelo.EmpleadoAdministrativo;
 import Modelo.EmpleadoBase;
+import Modelo.EmpleadoComercial;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -76,7 +77,7 @@ public class VentanaEmpleados extends JFrame {
         campos.add(new JLabel("Tipo de empleado:"));
         campos.add(cmbTipo);
 
-        campos.add(new JLabel("Bonificación (solo administrativos):"));
+        campos.add(new JLabel("Bonificación / Comisión %:"));
         campos.add(txtBonificacion);
 
 
@@ -192,12 +193,13 @@ public class VentanaEmpleados extends JFrame {
 
         cmbTipo.addActionListener(e -> {
 
-            boolean esAdministrativo =
-                    tipoSeleccionado().equals("Administrativo");
+            boolean usaCampoAdicional =
+                    tipoSeleccionado().equals("Administrativo")
+                            || tipoSeleccionado().equals("Comercial");
 
-            txtBonificacion.setEnabled(esAdministrativo);
+            txtBonificacion.setEnabled(usaCampoAdicional);
 
-            if (!esAdministrativo) {
+            if (!usaCampoAdicional) {
                 txtBonificacion.setText("");
             }
         });
@@ -298,6 +300,18 @@ public class VentanaEmpleados extends JFrame {
                     String.format(
                             "%.0f",
                             administrativo.getBonificacion()
+                    )
+            );
+
+        } else if (empleado instanceof EmpleadoComercial) {
+
+            EmpleadoComercial comercial =
+                    (EmpleadoComercial) empleado;
+
+            txtBonificacion.setText(
+                    String.format(
+                            "%.0f",
+                            comercial.getPorcentajeComision()
                     )
             );
         }
